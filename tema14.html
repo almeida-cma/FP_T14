@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python - TEMA 14: Funções e Módulos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #eee;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            background: linear-gradient(90deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header p {
+            margin-top: 10px;
+            color: #aaa;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ffd700;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.95em;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            color: #ddd;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+        }
+
+        .tab-btn.active {
+            background: #ffd700;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 0 0 20px 20px;
+            padding: 25px;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .card h2 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .card h3 {
+            color: #ffaa00;
+            margin: 15px 0 10px 0;
+            font-size: 1.1em;
+        }
+
+        .code-block {
+            background: #0d1117;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 1px solid #30363d;
+        }
+
+        .code-header {
+            background: #161b22;
+            padding: 6px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .code-header span {
+            font-family: monospace;
+            font-size: 0.8em;
+            color: #8b949e;
+        }
+
+        .copy-btn {
+            background: #238636;
+            border: none;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75em;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #2ea043;
+        }
+
+        .copy-btn.copied {
+            background: #1f6feb;
+        }
+
+        pre {
+            margin: 0;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #c9d1d9;
+        }
+
+        .info-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-list li {
+            padding: 6px 0;
+            padding-left: 22px;
+            position: relative;
+        }
+
+        .info-list li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: #ffd700;
+        }
+
+        .tip {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid #ffd700;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .exercise {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .exercise h4 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .tab-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+            pre {
+                font-size: 11px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #666;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 TEMA 14: Funções e Módulos</h1>
+            <p>Reutilizando código com funções e módulos | Copie e cole no Google Colab</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="intro">📖 Conceitos</button>
+            <button class="tab-btn" data-tab="funcoes">🔧 Funções</button>
+            <button class="tab-btn" data-tab="parametros">📥 Parâmetros</button>
+            <button class="tab-btn" data-tab="modulos">📦 Módulos</button>
+            <button class="tab-btn" data-tab="math">🧮 Módulo math</button>
+            <button class="tab-btn" data-tab="exercicios">💪 Exercícios</button>
+        </div>
+
+        <!-- CONCEITOS -->
+        <div id="intro" class="tab-content active">
+            <div class="card">
+                <h2>📌 O que são Funções e Módulos?</h2>
+                <p><strong>Funções:</strong> Blocos de código reutilizáveis que executam uma tarefa específica.</p>
+                <p><strong>Módulos:</strong> Arquivos .py que contêm funções e podem ser importados em outros programas.</p>
+                <br>
+                <ul class="info-list">
+                    <li><strong>def</strong> - Palavra usada para criar uma função</li>
+                    <li><strong>return</strong> - Retorna um valor da função</li>
+                    <li><strong>import</strong> - Importa um módulo</li>
+                </ul>
+                <div class="tip">
+                    💡 <strong>Importante:</strong> Funções evitam repetição de código e deixam o programa mais organizado!
+                </div>
+            </div>
+        </div>
+
+        <!-- FUNÇÕES SIMPLES -->
+        <div id="funcoes" class="tab-content">
+            <div class="card">
+                <h2>🔧 Funções Simples</h2>
+                <p>Funções que executam uma tarefa sem retornar valor (apenas exibem).</p>
+
+                <h3>Exemplo 1: Função de saudação</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 funcao_saudacao.py</span>
+                        <button class="copy-btn" data-code='# Funcao que exibe uma saudacao
+def saudacao():
+    print("Ola! Bem-vindo ao Python!")
+
+# Chamando a funcao
+saudacao()
+saudacao()'>Copiar</button>
+                    </div>
+                    <pre><code># Funcao que exibe uma saudacao
+def saudacao():
+    print("Ola! Bem-vindo ao Python!")
+
+# Chamando a funcao
+saudacao()
+saudacao()</code></pre>
+                </div>
+
+                <h3>Exemplo 2: Função que calcula e exibe o dobro</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 funcao_dobro.py</span>
+                        <button class="copy-btn" data-code='# Funcao que calcula e exibe o dobro
+def calcular_dobro(numero):
+    resultado = numero * 2
+    print(f"O dobro de {numero} e {resultado}")
+
+# Chamando a funcao
+calcular_dobro(5)
+calcular_dobro(10)
+calcular_dobro(7)'>Copiar</button>
+                    </div>
+                    <pre><code># Funcao que calcula e exibe o dobro
+def calcular_dobro(numero):
+    resultado = numero * 2
+    print(f"O dobro de {numero} e {resultado}")
+
+# Chamando a funcao
+calcular_dobro(5)
+calcular_dobro(10)
+calcular_dobro(7)</code></pre>
+                </div>
+
+                <div class="tip">
+                    💡 <strong>Dica:</strong> Use <code>def</code> para criar uma função e depois a chame pelo nome!
+                </div>
+            </div>
+        </div>
+
+        <!-- FUNÇÕES COM PARÂMETROS E RETURN -->
+        <div id="parametros" class="tab-content">
+            <div class="card">
+                <h2>📥 Funções com Parâmetros e Return</h2>
+                <p>Funções que recebem valores (parâmetros) e retornam um resultado.</p>
+
+                <h3>Exemplo 1: Função que retorna a média</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 funcao_media.py</span>
+                        <button class="copy-btn" data-code='# Funcao que calcula e retorna a media
+def calcular_media(nota1, nota2, nota3):
+    media = (nota1 + nota2 + nota3) / 3
+    return media
+
+# Usando a funcao
+resultado = calcular_media(7, 8, 9)
+print(f"A media e: {resultado}")
+
+# Chamando diretamente no print
+print(f"Media: {calcular_media(10, 6, 8)}")'>Copiar</button>
+                    </div>
+                    <pre><code># Funcao que calcula e retorna a media
+def calcular_media(nota1, nota2, nota3):
+    media = (nota1 + nota2 + nota3) / 3
+    return media
+
+# Usando a funcao
+resultado = calcular_media(7, 8, 9)
+print(f"A media e: {resultado}")
+
+# Chamando diretamente no print
+print(f"Media: {calcular_media(10, 6, 8)}")</code></pre>
+                </div>
+
+                <h3>Exemplo 2: Função que retorna o quadrado</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 funcao_quadrado.py</span>
+                        <button class="copy-btn" data-code='# Funcao que retorna o quadrado de um numero
+def quadrado(numero):
+    return numero ** 2
+
+# Testando a funcao
+print(f"Quadrado de 4: {quadrado(4)}")
+print(f"Quadrado de 7: {quadrado(7)}")
+print(f"Quadrado de 10: {quadrado(10)}")'>Copiar</button>
+                    </div>
+                    <pre><code># Funcao que retorna o quadrado de um numero
+def quadrado(numero):
+    return numero ** 2
+
+# Testando a funcao
+print(f"Quadrado de 4: {quadrado(4)}")
+print(f"Quadrado de 7: {quadrado(7)}")
+print(f"Quadrado de 10: {quadrado(10)}")</code></pre>
+                </div>
+
+                <div class="tip">
+                    💡 <strong>Dica:</strong> Use <code>return</code> para enviar um resultado de volta para quem chamou a função!
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULOS -->
+        <div id="modulos" class="tab-content">
+            <div class="card">
+                <h2>📦 Criando e Usando Módulos</h2>
+                <p>Módulos são arquivos .py que podem ser importados em outros programas.</p>
+
+                <h3>Exemplo 1: Criando um módulo (salve como "meu_modulo.py")</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 meu_modulo.py</span>
+                        <button class="copy-btn" data-code='# Este e um modulo com funcoes uteis
+def saudacao(nome):
+    return f"Ola, {nome}!"
+
+def dobro(numero):
+    return numero * 2
+
+def par_ou_impar(numero):
+    if numero % 2 == 0:
+        return "Par"
+    else:
+        return "Impar"'>Copiar</button>
+                    </div>
+                    <pre><code># Este e um modulo com funcoes uteis
+def saudacao(nome):
+    return f"Ola, {nome}!"
+
+def dobro(numero):
+    return numero * 2
+
+def par_ou_impar(numero):
+    if numero % 2 == 0:
+        return "Par"
+    else:
+        return "Impar"</code></pre>
+                </div>
+
+                <h3>Exemplo 2: Usando o módulo (mesma pasta)</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 usar_modulo.py</span>
+                        <button class="copy-btn" data-code='# Importando o modulo criado
+import meu_modulo
+
+# Usando as funcoes do modulo
+print(meu_modulo.saudacao("Ana"))
+print(f"Dobro de 5: {meu_modulo.dobro(5)}")
+print(f"10 e {meu_modulo.par_ou_impar(10)}")
+print(f"7 e {meu_modulo.par_ou_impar(7)}")'>Copiar</button>
+                    </div>
+                    <pre><code># Importando o modulo criado
+import meu_modulo
+
+# Usando as funcoes do modulo
+print(meu_modulo.saudacao("Ana"))
+print(f"Dobro de 5: {meu_modulo.dobro(5)}")
+print(f"10 e {meu_modulo.par_ou_impar(10)}")
+print(f"7 e {meu_modulo.par_ou_impar(7)}")</code></pre>
+                </div>
+
+                <div class="tip">
+                    💡 <strong>Dica:</strong> Para usar um módulo, ele deve estar na mesma pasta ou no caminho do Python!
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO MATH -->
+        <div id="math" class="tab-content">
+            <div class="card">
+                <h2>🧮 Módulo math (Matemático)</h2>
+                <p>O módulo <strong>math</strong> tem funções matemáticas prontas para usar.</p>
+
+                <h3>Exemplo 1: Arredondamento (ceil e floor)</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 math_ceil_floor.py</span>
+                        <button class="copy-btn" data-code='# Importando o modulo math
+import math
+
+numero = 4.3
+
+# ceil() - arredonda para cima
+print(f"Numero: {numero}")
+print(f"Arredondar para cima (ceil): {math.ceil(numero)}")
+
+# floor() - arredonda para baixo
+print(f"Arredondar para baixo (floor): {math.floor(numero)}")'>Copiar</button>
+                    </div>
+                    <pre><code># Importando o modulo math
+import math
+
+numero = 4.3
+
+# ceil() - arredonda para cima
+print(f"Numero: {numero}")
+print(f"Arredondar para cima (ceil): {math.ceil(numero)}")
+
+# floor() - arredonda para baixo
+print(f"Arredondar para baixo (floor): {math.floor(numero)}")</code></pre>
+                </div>
+
+                <h3>Exemplo 2: Raiz quadrada e potência</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 math_raiz.py</span>
+                        <button class="copy-btn" data-code='# Importando o modulo math
+import math
+
+# sqrt() - raiz quadrada
+numero = 25
+print(f"Raiz quadrada de {numero}: {math.sqrt(numero)}")
+
+# pow() - potência (mesmo que **)
+print(f"2 elevado a 3: {math.pow(2, 3)}")
+print(f"10 elevado a 2: {math.pow(10, 2)}")'>Copiar</button>
+                    </div>
+                    <pre><code># Importando o modulo math
+import math
+
+# sqrt() - raiz quadrada
+numero = 25
+print(f"Raiz quadrada de {numero}: {math.sqrt(numero)}")
+
+# pow() - potência (mesmo que **)
+print(f"2 elevado a 3: {math.pow(2, 3)}")
+print(f"10 elevado a 2: {math.pow(10, 2)}")</code></pre>
+                </div>
+
+                <h3>Exemplo 3: Soma de lista com fsum</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>📄 math_fsum.py</span>
+                        <button class="copy-btn" data-code='# Importando o modulo math
+import math
+
+# fsum() - soma precisa de numeros decimais
+valores = [10.5, 20.3, 30.7, 15.2]
+soma = math.fsum(valores)
+
+print(f"Lista: {valores}")
+print(f"Soma: {soma}")'>Copiar</button>
+                    </div>
+                    <pre><code># Importando o modulo math
+import math
+
+# fsum() - soma precisa de numeros decimais
+valores = [10.5, 20.3, 30.7, 15.2]
+soma = math.fsum(valores)
+
+print(f"Lista: {valores}")
+print(f"Soma: {soma}")</code></pre>
+                </div>
+
+                <div class="tip">
+                    💡 <strong>Dica:</strong> Use <code>import math</code> no início do programa para acessar todas essas funções!
+                </div>
+            </div>
+        </div>
+
+        <!-- EXERCÍCIOS -->
+        <div id="exercicios" class="tab-content">
+            <div class="card">
+                <h2>💪 Exercícios sobre Funções</h2>
+
+                <div class="exercise">
+                    <h4>Exercício 1: Função que retorna o triplo</h4>
+                    <p>Crie uma função chamada <code>triplo()</code> que recebe um número e retorna o triplo dele.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>📄 ex1_triplo.py</span>
+                            <button class="copy-btn" data-code='# Exercicio 1: Funcao triplo
+def triplo(numero):
+    return numero * 3
+
+# Testando
+print(f"Triplo de 4: {triplo(4)}")
+print(f"Triplo de 7: {triplo(7)}")
+print(f"Triplo de 10: {triplo(10)}")'>Copiar</button>
+                        </div>
+                        <pre><code># Exercicio 1: Funcao triplo
+def triplo(numero):
+    return numero * 3
+
+# Testando
+print(f"Triplo de 4: {triplo(4)}")
+print(f"Triplo de 7: {triplo(7)}")
+print(f"Triplo de 10: {triplo(10)}")</code></pre>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercício 2: Função de desconto</h4>
+                    <p>Crie uma função chamada <code>aplicar_desconto()</code> que recebe o preço e o percentual de desconto, e retorna o preço com desconto.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>📄 ex2_desconto.py</span>
+                            <button class="copy-btn" data-code='# Exercicio 2: Funcao de desconto
+def aplicar_desconto(preco, percentual):
+    desconto = preco * (percentual / 100)
+    preco_final = preco - desconto
+    return preco_final
+
+# Testando
+print(f"Preco com 10% de desconto: R$ {aplicar_desconto(100, 10):.2f}")
+print(f"Preco com 20% de desconto: R$ {aplicar_desconto(50, 20):.2f}")'>Copiar</button>
+                        </div>
+                        <pre><code># Exercicio 2: Funcao de desconto
+def aplicar_desconto(preco, percentual):
+    desconto = preco * (percentual / 100)
+    preco_final = preco - desconto
+    return preco_final
+
+# Testando
+print(f"Preco com 10% de desconto: R$ {aplicar_desconto(100, 10):.2f}")
+print(f"Preco com 20% de desconto: R$ {aplicar_desconto(50, 20):.2f}")</code></pre>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercício 3: Usando módulo math</h4>
+                    <p>Use o módulo math para calcular a raiz quadrada de 16, 25 e 49.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>📄 ex3_raiz.py</span>
+                            <button class="copy-btn" data-code='# Exercicio 3: Usando modulo math
+import math
+
+numeros = [16, 25, 49, 64, 81]
+
+for num in numeros:
+    print(f"Raiz quadrada de {num} = {math.sqrt(num)}")'>Copiar</button>
+                        </div>
+                        <pre><code># Exercicio 3: Usando modulo math
+import math
+
+numeros = [16, 25, 49, 64, 81]
+
+for num in numeros:
+    print(f"Raiz quadrada de {num} = {math.sqrt(num)}")</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>📚 TEMA 14 - Funções e Módulos | Material para iniciantes</p>
+            <p>💡 Copie cada código, cole no Google Colab e execute (Shift + Enter)</p>
+        </footer>
+    </div>
+
+    <script>
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        const copyBtns = document.querySelectorAll('.copy-btn');
+
+        copyBtns.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const codeToCopy = btn.getAttribute('data-code');
+
+                try {
+                    await navigator.clipboard.writeText(codeToCopy);
+                    const originalText = btn.textContent;
+                    btn.textContent = '✓ Copiado!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Erro ao copiar:', err);
+                    btn.textContent = 'Erro!';
+                    setTimeout(() => {
+                        btn.textContent = 'Copiar';
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
